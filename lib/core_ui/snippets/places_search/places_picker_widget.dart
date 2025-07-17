@@ -6,13 +6,13 @@ import 'package:location_module/core_ui/snippets/places_search/places_search_del
 class PlacesPickerWidget extends StatelessWidget {
 
   final Function(LocationSearchModel) onSearch;
-  final BuildContext? context;
+  final BuildContext context;
 
-  PlacesPickerWidget({super.key, required this.onSearch}): context = null;
+  //PlacesPickerWidget({super.key, required this.onSearch}): context = null;
 
-  PlacesPickerWidget.searchPlaces({super.key, required this.onSearch, this.context}) {
+  PlacesPickerWidget.searchPlaces({super.key, required this.onSearch, required this.context}) {
     showSearch(
-      context: context ?? Get.context!,
+      context: context,
       delegate: PlacesSearchDelegate(),
     ).then((location) {
       onSearch(location!);

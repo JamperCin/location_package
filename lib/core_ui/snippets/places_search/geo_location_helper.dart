@@ -12,8 +12,8 @@ class GeoLocationHelper {
   final bool shouldAskPermission;
 
   GeoLocationHelper._(this.shouldAskPermission) {
-    if(shouldAskPermission) {
-      _checkPermissionStatus();
+    if (shouldAskPermission) {
+      checkPermissionStatus();
     }
   }
 
@@ -30,7 +30,7 @@ class GeoLocationHelper {
 
   ///Check the permission status of the user
   ///Permissions can be in the state of [DENIED, DENIED-FOREVER , WHILE-IN-USE, ALWAYS, etc ]
-  Future<void> _checkPermissionStatus() async {
+  Future<void> checkPermissionStatus() async {
     if (appDbPreference.getBool(appDbPreference.LOCATION_PERMISSION_ALLOWED)) {
       return;
     }
@@ -46,7 +46,9 @@ class GeoLocationHelper {
     if (permission == LocationPermission.always ||
         permission == LocationPermission.whileInUse) {
       appDbPreference.setBool(
-          appDbPreference.LOCATION_PERMISSION_ALLOWED, true);
+        appDbPreference.LOCATION_PERMISSION_ALLOWED,
+        true,
+      );
       return;
     }
   }
@@ -56,14 +58,14 @@ class GeoLocationHelper {
     if (pos != null) {
       return await _buildLocation(pos.latitude, pos.longitude);
     }
-    return  LocationSearchModel();
+    return LocationSearchModel();
   }
 
   ///Get the current location position of the user
   ///Last known location
   Future<LocationSearchModel> getCurrentLocation() async {
     if (!(await _isLocationEnabled())) {
-      return  LocationSearchModel();
+      return LocationSearchModel();
     }
 
     Position pos = await Geolocator.getCurrentPosition();
@@ -74,7 +76,7 @@ class GeoLocationHelper {
   }
 
   ///Build a complete location Object which has both the coordinates and address
-  ///This function takes [LatLng]
+  ///This function takes [lat] and [lng] as parameters
   /// A pair of latitude and longitude coordinates, stored as degrees.
   Future<LocationSearchModel> _buildLocation(double lat, double lng) async {
     List<Placemark> placeMark = await placemarkFromCoordinates(lat, lng);
@@ -107,7 +109,8 @@ class GeoLocationHelper {
   ) {
     var p = 0.017453292519943295;
     var c = cos;
-    var a = 0.5 -
+    var a =
+        0.5 -
         c((pointB.latitude - pointA.latitude) * p) / 2 +
         c(pointA.latitude * p) *
             c(pointB.latitude * p) *
@@ -120,8 +123,9 @@ class GeoLocationHelper {
     LocationSearchModel pointA,
     LocationSearchModel pointB, {
     int dec = 2,
+    String metrics = 'Km',
   }) async {
     double distance = _calculateDistance(pointA, pointB);
-    return "${distance.toStringAsFixed(dec)} Km";
+    return "${distance.toStringAsFixed(dec)} $metrics";
   }
 }
