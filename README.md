@@ -49,7 +49,7 @@ First of all you need to add your list of environments in an array form to your 
 
 Your env.json should look something like below
 
-```
+```dart
 {
   "env" : [
     {
